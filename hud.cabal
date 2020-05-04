@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 1102ef33a512e80b21347b78bd90f4cadd7906baab8d474bac42c713a964b927
+-- hash: 8bc513115cbfca19a34c3479b3d94a44e10a09eebf527f4ac84ccf5ec1067a3b
 
 name:           hud
 version:        0.1.0.0
@@ -33,8 +33,9 @@ library
   hs-source-dirs:
       src
   build-depends:
-                base >=4.7 && <5
-                , parsec >= 3.1.14.0
+      HUnit ==1.6.0.0
+    , base >=4.7 && <5
+    , parsec ==3.1.14.0
   default-language: Haskell2010
 
 executable hud-exe
@@ -45,9 +46,10 @@ executable hud-exe
       app
   ghc-options: -threaded -rtsopts -with-rtsopts=-N
   build-depends:
-                      base >=4.7 && <5
-                , hud
-                , parsec >= 3.1.14.0
+      HUnit ==1.6.0.0
+    , base >=4.7 && <5
+    , hud
+    , parsec ==3.1.14.0
   default-language: Haskell2010
 
 test-suite hud-test
@@ -59,7 +61,8 @@ test-suite hud-test
       test
   ghc-options: -threaded -rtsopts -with-rtsopts=-N
   build-depends:
-                      base >=4.7 && <5
-                , hud
-                , parsec >= 3.1.14.0
+      HUnit ==1.6.0.0
+    , base >=4.7 && <5
+    , hud
+    , parsec ==3.1.14.0
   default-language: Haskell2010
