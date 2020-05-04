@@ -1,0 +1,65 @@
+cabal-version: 1.12
+
+-- This file has been generated from package.yaml by hpack version 0.31.2.
+--
+-- see: https://github.com/sol/hpack
+--
+-- hash: 1102ef33a512e80b21347b78bd90f4cadd7906baab8d474bac42c713a964b927
+
+name:           hud
+version:        0.1.0.0
+description:    Please see the README on GitHub at <https://github.com/githubuser/hud#readme>
+homepage:       https://github.com/githubuser/hud#readme
+bug-reports:    https://github.com/githubuser/hud/issues
+author:         Author name here
+maintainer:     example@example.com
+copyright:      2020 Author name here
+license:        BSD3
+license-file:   LICENSE
+build-type:     Simple
+extra-source-files:
+    README.md
+    ChangeLog.md
+
+source-repository head
+  type: git
+  location: https://github.com/githubuser/hud
+
+library
+  exposed-modules:
+      Lib
+  other-modules:
+      Paths_hud
+  hs-source-dirs:
+      src
+  build-depends:
+                base >=4.7 && <5
+                , parsec >= 3.1.14.0
+  default-language: Haskell2010
+
+executable hud-exe
+  main-is: Main.hs
+  other-modules:
+      Paths_hud
+  hs-source-dirs:
+      app
+  ghc-options: -threaded -rtsopts -with-rtsopts=-N
+  build-depends:
+                      base >=4.7 && <5
+                , hud
+                , parsec >= 3.1.14.0
+  default-language: Haskell2010
+
+test-suite hud-test
+  type: exitcode-stdio-1.0
+  main-is: Spec.hs
+  other-modules:
+      Paths_hud
+  hs-source-dirs:
+      test
+  ghc-options: -threaded -rtsopts -with-rtsopts=-N
+  build-depends:
+                      base >=4.7 && <5
+                , hud
+                , parsec >= 3.1.14.0
+  default-language: Haskell2010
