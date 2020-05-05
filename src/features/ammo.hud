@@ -1,0 +1,9 @@
+# player health
+# needs this block to be copied over in hudlayout
+(block-copy "resource/hudlayout.res" "HudWeaponAmmo")
+
+(file-copy "resource/ui/hudammoweapons.res")
+
+# needs this block to be copied over in hudlayout
+(animation-copy "HudLowAmmoPulse")
+# needs this block to be copied over in hudlayout

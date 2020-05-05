@@ -1,0 +1,3 @@
+# player health
+# needs this block to be copied over in hudlayout
+(block-copy "resource/hudlayout.res" "")
