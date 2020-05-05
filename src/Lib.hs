@@ -3,6 +3,7 @@ module Lib
   , Node (..)
   , Feature (..)
   , DepExpr (..)
+  , Quoted (..)
   ) where
 
 import Text.Parsec
@@ -12,8 +13,11 @@ someFunc :: IO ()
 someFunc = putStrLn "someFunc"
 
 type Tag = Maybe String
+
+data Quoted = Quoted | Unquoted deriving (Show, Eq)
+
 data Node
-  = Block String [Node] Tag
+  = Block String Quoted [Node] Tag
   | Field String String Tag
   deriving (Show, Eq)
 
@@ -52,5 +56,5 @@ data DepExpr
 getVals :: String -> Node -> [String]
 getVals search (Field name val tag) | name == search = [val]
 getVals search (Field name val tag) = []
-getVals search (Block name nodes tag) = concat (map (getVals search) nodes)
+getVals search (Block name quoted nodes tag) = concat (map (getVals search) nodes)
 

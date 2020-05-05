@@ -38,7 +38,8 @@ unquotedString = do
 block :: Parser Node
 block = do
   padding
-  name <- quotedString <|> unquotedString
+  (quoted, name) <-
+    (((,) Quoted) <$> quotedString) <|> (((,) Unquoted) <$> unquotedString)
   padding
   tag <- optionMaybe tagParser
   padding
@@ -46,7 +47,7 @@ block = do
     between (char '{') (char '}') $
     padding *> (try (many (try ((try field) <|> (try block)))))
   padding
-  return $ Block name inside tag
+  return $ Block name quoted inside tag
 
 field :: Parser Node
 field = do

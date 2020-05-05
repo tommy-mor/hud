@@ -45,9 +45,11 @@ showFeature = show
 showFormat :: Node -> String
 showFormat = showFormatHelp 0
   where
-    showFormatHelp n (Block name children tag) =
+    showFormatHelp n (Block name isQuoted children tag) =
       (tabs n) ++
-      (quoted name) ++
+      (case isQuoted of
+         Quoted -> (quoted name)
+         Unquoted -> name) ++
       (tabs 1) ++
       (maybe "" tagged tag) ++
       newl ++
