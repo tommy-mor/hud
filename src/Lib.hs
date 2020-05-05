@@ -1,7 +1,8 @@
 module Lib
   ( someFunc
   , Node (..)
-  , showFormat
+  , Feature (..)
+  , DepExpr (..)
   ) where
 
 import Text.Parsec
@@ -10,11 +11,33 @@ import Text.Parsec.String
 someFunc :: IO ()
 someFunc = putStrLn "someFunc"
 
-
+type Tag = Maybe String
 data Node
-  = Block String [Node]
-  | Field String String (Maybe String)
+  = Block String [Node] Tag
+  | Field String String Tag
   deriving (Show, Eq)
+
+data Hud =
+  Hud
+    { dispname :: String
+    , path :: String -- change to filepath type later
+    } 
+-- TODO finish
+
+data Feature =
+  Feature
+    { name :: String
+    , dependencies :: [DepExpr]
+    } deriving (Show, Eq)
+
+
+data DepExpr
+  = BlockCopy String String -- TODO make this list so we can copy nested blocks (maybe not needed)
+  | FileCopy String
+  | AnimationCopy String
+  deriving (Show, Eq)
+  
+  
 
 
 -- start with thing the recreates every file
@@ -26,28 +49,8 @@ data Node
 -- IDEA maybe it only generates new files, then you like drag the folder manually, see if that works t opatch it.
 -- like let windows do the diff. (not that manual alg is that much harder, but easier to start with/test)
 
-tabs n = ['\t' | _ <- [1..n]]
-quoted s = "\"" ++ s ++ "\""
-tagged s = "[$" ++ s ++ "]"
-newl = "\n"
+getVals :: String -> Node -> [String]
+getVals search (Field name val tag) | name == search = [val]
+getVals search (Field name val tag) = []
+getVals search (Block name nodes tag) = concat (map (getVals search) nodes)
 
-
-showFormat :: Node -> String
-showFormat = showFormatHelp 0
-  where
-    showFormatHelp n (Block name children) =
-      (tabs n) ++
-      (quoted name) ++
-      newl ++
-      (tabs n) ++
-      "{" ++
-      newl ++
-      (foldl
-         (\build nextchild -> (build ++ (showFormatHelp (n + 1) nextchild)))
-         ""
-         children) ++
-      (tabs n) ++ "}" ++ newl
-    showFormatHelp n (Field name val tag) =
-      (tabs n) ++
-      quoted name ++
-      (tabs 1) ++ (quoted val) ++ (tabs 1) ++ (maybe "" tagged tag) ++ "\n"
