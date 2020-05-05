@@ -1,8 +1,6 @@
 module Lib
   ( someFunc
   , Node (..)
-  , block
-  , field
   ) where
 
 import Text.Parsec
@@ -17,54 +15,12 @@ data Node
   | Field String String (Maybe String)
   deriving (Show, Eq)
 
-comment :: Parser ()
-comment = do
-  string "//"
-  _ <- (optionMaybe $ manyTill anyChar (try newline)) -- ignore comments
-  return ()
-
-padding = do
-  spaces
-  optional comment
-  spaces
-
-quotedString :: Parser String
-quotedString = do
-  char '"'
-  name <- many1 (letter <|> oneOf "/._" <|> digit)
-  char '"'
-  return name
-
-block :: Parser Node
-block = do
-  padding
-  name <- quotedString
-  padding
-  inside <- between (char '{') (char '}') (many1 ((try field) <|> block))
-  padding
-  return $ Block name inside
-
-field :: Parser Node
-field = do
-  padding -- does this cover before and after comments
-  name <- quotedString
-  padding
-  val <- quotedString
-  padding
-  tag <- optionMaybe tagParser
-  padding
-  return $ Field name val tag
-
-tagParser :: Parser String
-tagParser = do
-  spaces
-  char '['
-  char '$'
-  tag <- many1 (oneOf ['A'..'Z'] <|> digit)
-  char ']'
-  return tag
 
 -- start with thing the recreates every file
 -- then change it so it only recreates the needed files
 -- then change it so that it splices in the text lines (with a parser that preserves line numbers)
 -- and diffs old/new data structures? idk
+
+
+-- IDEA maybe it only generates new files, then you like drag the folder manually, see if that works t opatch it.
+-- like let windows do the diff. (not that manual alg is that much harder, but easier to start with/test)

@@ -1,7 +1,9 @@
 module Main where
 
 import Lib
+import Parse
 import System.IO
+import Text.Parsec
 
 main :: IO ()
 main
@@ -13,6 +15,7 @@ main
       "/home/tommy/programming/clones/tf2basehud/resource/ui/hudplayerhealth.res"
       ReadMode
   contents <- hGetContents handle
-  putStr contents
+  putStr $ showNice (parse block "hudplayerhealth.res" contents)
   hClose handle
 
+showNice = show
