@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 8bc513115cbfca19a34c3479b3d94a44e10a09eebf527f4ac84ccf5ec1067a3b
+-- hash: d15bc17222d3c93a798efe662dc76200b43f67e864c1e82017d8b886a5898d4b
 
 name:           hud
 version:        0.1.0.0
@@ -28,6 +28,7 @@ source-repository head
 library
   exposed-modules:
       Lib
+      Parse
   other-modules:
       Paths_hud
   hs-source-dirs:
