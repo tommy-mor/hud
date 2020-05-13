@@ -5,6 +5,7 @@ module Lib
   , DepExpr (..)
   , Quoted (..)
   , Hud (..)
+  , getVals
   ) where
 
 import Text.Parsec

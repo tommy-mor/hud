@@ -6,10 +6,12 @@ import System.IO
 import Text.Parsec
 import System.Directory
 import System.FilePath
+import Control.Monad.Except
 
 
 
 fname = "/home/tommy/programming/clones/tf2basehud"
+coolfname = "/home/tommy/programming/clones/rayshud"
 
 main :: IO ()
 main
@@ -27,40 +29,47 @@ main
   --let features = (Feature "name") <$> parse depexprs "ammo feature" contents2
   --putStrLn $ mergeEither $ first show $ (showFeature <$> features)
   --hClose handle2
-  nice <- makeHud fname
-  putStrLn $ show nice
+  v <- runExceptT mainhelp
+  putStrLn (mergeEither v)
+
+mainhelp :: ExceptT String IO String
+mainhelp = do
+  basehud <- makeHud fname
+  coolhud <- makeHud coolfname
+  return (show coolhud)
+
+
+  
+  
 
 -- makes hud from filepath,   fname/resource/scripts
 -- returns nothing if it doesn't work (change to either for better errors eventually)
-makeHud :: FilePath -> IO (Either String Hud)
+makeHud :: FilePath -> ExceptT String IO Hud
 makeHud fname = do
-  isDir <- (doesDirectoryExist fname)
+  isDir <- lift (doesDirectoryExist fname)
   if not isDir
-    then return $ Left "directory does not exist or is filename"
+    then fail "directory does not exist or is filename"
     else do
       let dispname = takeBaseName fname
           hudlayoutFname = fname </> "scripts" </> "hudlayout.res"
           clientschemeFname = fname </> "resource" </> "clientscheme.res"
-      hudlayoutHandle <- openFile hudlayoutFname ReadMode
-      hudl <- hGetContents hudlayoutHandle
-      clientschemeHandle <- openFile clientschemeFname ReadMode
-      client <- hGetContents clientschemeHandle
-      return
-        (case ( parse block ("hudlayout.res, " ++ dispname) hudl
-              , parse block ("clientscheme.res, " ++ dispname) client) of
-           (Right hudlnode, Right clientsnode) ->
-             (Right $
-              Hud
-                { dispname = dispname
-                , path = fname
-                , hudlayout = hudlnode
-                , clientscheme = clientsnode
-                })
-           (Left error, Right _) -> Left $ "parse failed: " ++ show error
-           (Right _, Left error) -> Left $ "parse failed: " ++ show error
-           (Left error1, Left error2) ->
-             Left $
-             "both parses failed: " ++ show error1 ++ "\n------\n" ++ show error2)
+      hudlayoutHandle <- lift $ openFile hudlayoutFname ReadMode
+      hudl <- lift $ hGetContents hudlayoutHandle
+      clientschemeHandle <- lift $ openFile clientschemeFname ReadMode
+      client <- lift $ hGetContents clientschemeHandle
+      (case ( parse block ("hudlayout.res, " ++ dispname) hudl
+            , parse block ("clientscheme.res, " ++ dispname) client) of
+         (Right hudlnode, Right clientsnode) -> return $ Hud
+              { dispname = dispname
+              , path = fname
+              , hudlayout = hudlnode
+              , clientscheme = clientsnode
+              }
+         (Left error, Right _) -> fail $ "parse failed: " ++ show error
+         (Right _, Left error) -> fail $ "parse failed: " ++ show error
+         (Left error1, Left error2) ->
+           fail $
+           "both parses failed: " ++ show error1 ++ "\n------\n" ++ show error2)
 
 test = do
   let fname = "/home/tommy/programming/clones/tf2basehud/resource/clientscheme.res"
