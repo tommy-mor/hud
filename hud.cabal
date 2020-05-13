@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: d15bc17222d3c93a798efe662dc76200b43f67e864c1e82017d8b886a5898d4b
+-- hash: 5cb2e246afc31ad889d20137d475c85b7d6dbd5b1580a8dfb9f0cc99f7365c5e
 
 name:           hud
 version:        0.1.0.0
@@ -36,6 +36,8 @@ library
   build-depends:
       HUnit ==1.6.0.0
     , base >=4.7 && <5
+    , directory ==1.3.6.0
+    , filepath ==1.4.2.1
     , parsec ==3.1.14.0
   default-language: Haskell2010
 
@@ -49,6 +51,8 @@ executable hud-exe
   build-depends:
       HUnit ==1.6.0.0
     , base >=4.7 && <5
+    , directory ==1.3.6.0
+    , filepath ==1.4.2.1
     , hud
     , parsec ==3.1.14.0
   default-language: Haskell2010
@@ -64,6 +68,8 @@ test-suite hud-test
   build-depends:
       HUnit ==1.6.0.0
     , base >=4.7 && <5
+    , directory ==1.3.6.0
+    , filepath ==1.4.2.1
     , hud
     , parsec ==3.1.14.0
   default-language: Haskell2010

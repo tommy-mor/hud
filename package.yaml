@@ -23,6 +23,8 @@ dependencies:
 - base >= 4.7 && < 5
 - parsec == 3.1.14.0
 - HUnit == 1.6.0.0
+- directory == 1.3.6.0
+- filepath == 1.4.2.1
 
 library:
   source-dirs: src

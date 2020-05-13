@@ -32,14 +32,19 @@ quotedString = do
 
 unquotedString :: Parser String
 unquotedString = do
-  name <- many (letter <|> (oneOf "_"))-- covers every case except escaped strings
+  name <- many (letter <|> digit <|> (oneOf "_."))-- covers every case except escaped strings
   return name
+
+quotedOrUnquoted :: Parser (Quoted, String)
+quotedOrUnquoted =
+  (((,) Quoted) <$> quotedString) <|> (((,) Unquoted) <$> unquotedString)
+  
 
 block :: Parser Node
 block = do
   padding
   (quoted, name) <-
-    (((,) Quoted) <$> quotedString) <|> (((,) Unquoted) <$> unquotedString)
+    quotedOrUnquoted
   padding
   tag <- optionMaybe tagParser
   padding
@@ -52,24 +57,23 @@ block = do
 field :: Parser Node
 field = do
   padding -- does this cover before and after comments
-  name <- quotedString
+  (quoted, name) <-
+    quotedOrUnquoted
   padding
   val <- quotedString
   padding
   tag <- optionMaybe tagParser
   padding
-  return $ Field name val tag
+  return $ Field name quoted val tag
 
 tagParser :: Parser String
 tagParser = do
   spaces
   char '['
-  char '$'
-  tag <- many1 (oneOf ['A'..'Z'] <|> digit)
+  inside <- many (noneOf "]")
   char ']'
-  return tag
+  return inside
 
--- TODO feature parser
 -- TODO test hudlayout.txt parser
 -- TODO test parse on hudlayout, where titles don't need to be string quoted
 -- Add field to block saying if its quoted or not, just in case it needs to be saved
